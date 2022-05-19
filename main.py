@@ -2,10 +2,6 @@ import time
 
 import requests
 
-# 在浙学手机号密码
-account = 123456
-passwd = ''
-
 # 刷课速度,默认两倍速，想秒过的可以改成一个极大的数字
 speed = 2
 
@@ -15,10 +11,14 @@ chapterUrl = r'http://service.zjooc.cn/service/jxxt/api/app/course/chapter/getSt
 videoUrl = r'http://service.zjooc.cn/service/learningmonitor/api/learning/monitor/videoPlaying'
 textUrl = r'http://service.zjooc.cn/service/learningmonitor/api/learning/monitor/finishTextChapter'
 
-# 课程id
-courseId = r''
-
 headers = {}
+
+print("账号(通常为手机号)：")
+account = input()
+print("密码：")
+passwd = input()
+
+courseId = ''
 
 
 def finish_video(chapter):
@@ -61,17 +61,21 @@ def finish_text(chapter):
 
 resp = requests.post(loginUrl, json={"login_name": account, "password": passwd, "type": 1})
 
-if resp.status_code != 200:
-    print('登陆失败')
+if resp.status_code != 200 or resp.json()['success'] is False:
+    print('登陆失败：', resp.json()['message'])
     exit(0)
 
 headers['openid'] = resp.json()['data']['loginResult']['openid']
 
-# 去除下方代码注释可以在程序运行时打印出课程列表
-# resp = requests.get(coursesUrl, headers=headers)
-# for course in resp.json()['data']:
-#     print('%s %s' % (course['courseName'],course['id']))
-# exit(0)
+print("课程")
+resp = requests.get(coursesUrl, headers=headers)
+courses = resp.json()['data']
+i = 0
+for course in courses:
+    print('[%d]%s' % (i, course['courseName']))
+    i += 1
+index = input("输入要刷的课程序号:")
+courseId = courses[int(index)]['id']
 
 resp = requests.get(chapterUrl, params={
     'courseId': courseId,

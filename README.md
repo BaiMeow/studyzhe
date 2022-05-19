@@ -4,16 +4,15 @@
 
 于是乎，就手搓了一个
 
-需要修改代码中的`account`,`passwd`,`courseId`为账号密码课程id
-
-关于课程id的获取，只需要去掉代码中的注释部分,像下面这种做
-```python
-# 去除下方代码注释可以在程序运行时打印出课程列表
-resp = requests.get(coursesUrl, headers=headers)
-for course in resp.json()['data']:
-    print('%s %s' % (course['courseName'],course['id']))
-    exit(0)
+### 使用方法
+#### 运行
+```shell
+pip install -r requirement.txt
+python3 ./main.py
 ```
-运行的时候就会打印所有课程及其id，左边课程名右边id，
+然后输入账号，密码，课程id即可
 
-把id记下来赋给courseId即可
+课程id留空会打印所有课程并获取课程id
+
+#### 倍速
+默认为2倍速，想修改倍数的，请修改全局变量`speed`
